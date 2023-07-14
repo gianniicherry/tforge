@@ -81,6 +81,4 @@ test:
 #
 production:
   <<: *default
-  database: terraforge_production
-  username: terraforge
-  password: <%= ENV["TERRAFORGE_DATABASE_PASSWORD"] %>
+  url: <%= ENV['DATABASE_URL'] %>
