@@ -1,0 +1,2 @@
+class EwastesController < ApplicationController
+end
