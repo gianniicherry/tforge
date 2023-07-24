@@ -1,4 +1,8 @@
 class Category < ApplicationRecord
-    has_many :ewastes
-    has_many :brands
+    
+    
+    
+    has_many :products
+    has_many :ewastes, through: :products
+    
 end

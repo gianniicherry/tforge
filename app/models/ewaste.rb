@@ -1,7 +1,6 @@
 class Ewaste < ApplicationRecord
     belongs_to :user
-    belongs_to :category
-    belongs_to :brand
-    belongs_to :product
-    has_many :requests, through: :users
+    belongs_to :request
+    has_many :products
+    has_one :categories, through: products
 end

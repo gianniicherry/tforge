@@ -12,7 +12,7 @@ export default function Navbar({ isLoggedIn }) {
         <CustomLink to="/recycle">Recycle</CustomLink>
         <CustomLink to="/contact">Contact</CustomLink>
         <CustomLink to="/about">About</CustomLink>
-        {isLoggedIn && <CustomLink to="/recyclerequests">Recycle Requests</CustomLink>}
+        {isLoggedIn && <CustomLink to="/recyclerequests">Account</CustomLink>}
       </NavList>
     </NavbarContainer>
   );

@@ -1,4 +1,8 @@
 class User < ApplicationRecord
-    has_many :ewastes
-    has_many :requests, through: :ewastes
+    has_secure_password
+    validates :email, uniqueness: true
+    validates :password, presence: true 
+
+    has_many :requests
+    has_many :ewastes, through: :requests
 end
