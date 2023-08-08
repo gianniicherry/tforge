@@ -19,30 +19,10 @@ categories = [
   { name: 'Smartphone', brand: "LG", weight: 0.3 },
   { name: 'Smartphone', brand: "Google", weight: 0.4 },
   { name: 'Tablet' , brand: "Apple", weight: 1.5},
-  { name: 'Smartphone', brand: "Other", weight: 0.5 },
-  { name: 'Laptop', brand: "Other", weight: 3.6 },
-  { name: 'Tablet', brand: "Other", weight: 3.6 },
+  { name: 'Other', brand: "Other", weight: 3 },
+
+  
 
 
 ]
 categories.each { |c| Category.create(c) }
-
-
-brands = [
-    {name: 'Apple'},
-    {name: 'Samsung'},
-    {name: 'Dell'},
-    {name: 'Lenovo'},
-    {name: 'HP'},
-    {name: 'Google'},
-    {name: 'Other'},
-]
-brands.each {|b| Brand.create(b)}
-
-
-products = [
-    {name: 'Iphone', category_id: 3, brand_id: 1},
-    {name: 'Galaxy', category_id: 3, brand_id: 2},
-    {name: 'Other', category_id: 3, brand_id: 1},
-
-]

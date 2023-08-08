@@ -55,7 +55,7 @@ function App() {
           <Route path="/recycle" element={<Recycle />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/recyclestatus" element={<RecycleStatus />} />
+          <Route path="/recyclerequests" element={<RecycleStatus />} />
         </Routes>
         </UserContext.Provider>
       </div>

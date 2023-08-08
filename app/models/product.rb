@@ -1,5 +1,5 @@
 class Product < ApplicationRecord
-    belongs_to :ewaste
+    has_many :ewastes
     belongs_to :category
     
 end
