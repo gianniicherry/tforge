@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import {Link} from "react-router-dom"
 import { UserContext } from '../App';
 import {FormContainer, Form, Label, Select, Input, Button, ItemContainer, AddressForm} from "../styles/Recycle.styles"
 
@@ -18,6 +19,9 @@ function Recycle() {
   const [requestCity, setRequestCity] = useState("")
   const [requestState, setRequestState] = useState("")
   const [requestZip, setRequestZip] = useState("")
+  const [loginPrompt, setLoginPrompt] = useState(false)
+  const [anyItems, setAnyItems] = useState(false)
+  const [imageFile, setImageFile] = useState(null)
 
   useEffect(() => {
     fetch("/categories")
@@ -42,80 +46,117 @@ function Recycle() {
   }, []);
 
   const handleAddItem = () => {
-    const newEwaste = {
-        name: product, 
+    if (currentUser) {
+      // Validate form fields before adding the item
+      if (!product || !condition || !selectedBrand || !category) {
+        alert('Please fill out all form fields.');
+        return;
+      }
+      const newEwaste = {
+        name: product,
         condition: condition,
-        user_id: currentUser.id, 
-        request_id: requestId, 
-        category_id: categoryId,  
-      }
-    setItems([...items, newEwaste]);
-    // Clear input fields
-    setProduct("");
+        user_id: currentUser.id,
+        request_id: requestId,
+        category_id: categoryId,
+        image: imageFile
+      };
+      setItems([...items, newEwaste]);
+      // Clear input fields
+      setAnyItems(true)
+      setProduct('');
+      setImageFile(null)
+    } else {
+      setLoginPrompt(true);
+    }
   };
 
-function handleSubmit(e) {
-  e.preventDefault();
+  function handleImageChange(e){
+    setImageFile(e.target.files[0])
+  }
 
-  const addressData = {
-    address1: requestAddress1,
-    address2: requestAddress2,
-    city: requestCity,
-    state: requestState,
-    zip: requestZip,
-    user_id: currentUser.id
-  };
-
-  fetch('/requests', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(addressData)
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Failed to submit request');
-      }
-      return response.json();
+  function handleSubmit(e) {
+    e.preventDefault();
+  
+    const formData = new FormData();
+    formData.append('address1', requestAddress1);
+    formData.append('address2', requestAddress2);
+    formData.append('city', requestCity);
+    formData.append('state', requestState);
+    formData.append('zip', requestZip);
+    formData.append('user_id', currentUser.id);
+  
+    fetch('/requests', {
+      method: 'POST',
+      body: formData, // Use the FormData object
     })
-    .then(requestData => {
-      const itemPromises = items.map(item => {
-        return fetch('/ewastes', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            ...item,
-            request_id: requestData.id
+      .then(response => response.json())
+      .then(requestData => {
+        const requestId = requestData.id;
+  
+        const itemPromises = items.map(item => {
+          const itemFormData = new FormData();
+          itemFormData.append('name', item.name);
+          itemFormData.append('condition', item.condition);
+          itemFormData.append('user_id', item.user_id);
+          itemFormData.append('request_id', requestId);
+          itemFormData.append('category_id', item.category_id);
+          itemFormData.append('image', item.image); 
+  
+          return fetch('/ewastes', {
+            method: 'POST',
+            body: itemFormData,
           })
-        })
-          .then(itemResponse => {
-            if (!itemResponse.ok) {
-              console.error('Failed to submit item:', item);
-            }
-          })
+            .then(itemResponse => {
+              if (!itemResponse.ok) {
+                console.error('Failed to submit item:', item);
+              }
+            })
+            .catch(error => {
+              console.error('Error submitting item:', error);
+            });
+        });
+  
+        return Promise.all(itemPromises).then(() => requestId);
+      })
+      .then(submittedRequestId => {
+        console.log('Request and items submitted successfully');
+        // Now you can make the fetch request with the correct requestId
+        fetch(`/requests/${submittedRequestId}/requestvalue`)
+          .then(r => r.json())
+          .then(data => console.log(data))
           .catch(error => {
-            console.error('Error submitting item:', error);
+            console.error('Error fetching request value:', error);
           });
+      })
+      .catch(error => {
+        console.error('Error:', error);
       });
+      setImageFile(null)
+      setRequestAddress1(" ")
+      setRequestAddress2(" ")
+      setRequestCity(" ")
+      setRequestState(" ")
+      setRequestZip(" ")
+  }
+   
 
-      return Promise.all(itemPromises);
-    })
-    .then(() => {
-      console.log('Request and items submitted successfully');
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+function renderRequest(e) {
+  if (currentUser) {
+    e.preventDefault();
+
+    // Validate form fields before adding the item
+    if (!product || !condition || !selectedBrand || !category) {
+      alert('Please fill out all form fields.');
+      return;
+    }
+
+    handleAddItem();
+    setShowRequest(true);
+  } else {
+    e.preventDefault();
+    setLoginPrompt(true);
+  }
 }
-
- function renderRequest(e) {
-     e.preventDefault()
-     handleAddItem()
-     setShowRequest(true)
- }
   
   return (
     <FormContainer>
@@ -127,7 +168,6 @@ function handleSubmit(e) {
           <option value="Tablet">Tablet</option>
           <option value="Other">Other</option>
         </Select>
-        <div>
           <Label>Product Brand</Label>
           <Select id="brand" value={selectedBrand} onChange={(e) => setSelectedBrand(e.target.value)}>
             {brands
@@ -138,11 +178,8 @@ function handleSubmit(e) {
                 </option>
               ))}
           </Select>
-        </div>
-        <div>
           <Label>Name of item</Label>
           <Input type="text" value={product} onChange={(e) => setProduct(e.target.value)} />
-        </div>
         <Label>Product Condition</Label>
         <Select id="category" value={condition} onChange={(e) => setCondition(e.target.value)}>
           <option value="Perfect">Perfect</option>
@@ -150,20 +187,19 @@ function handleSubmit(e) {
           <option value="Significant wear">Significant wear</option>
           <option value="Broken">Broken</option>
         </Select>
+        <Label>Upload Image</Label>
+        <Input type="file" onChange={handleImageChange} accept="image/*" />
         <Button type="submit">Submit</Button>
       </Form>
-
       <Button onClick={handleAddItem}>Add Another Item</Button>
-
-      <ItemContainer>
-        <h2>Added Items:</h2>
+     {anyItems ? <ItemContainer>
         {items.map((item, index) => (
           <div key={index}>
             <p>Product: {item.name}</p>
             <p>Condition: {item.condition}</p>
           </div>
         ))}
-      </ItemContainer>
+      </ItemContainer> : ""}
 
       {showRequest && (
         <AddressForm onSubmit={handleSubmit}>
@@ -190,6 +226,12 @@ function handleSubmit(e) {
           </div>
           <Button>Recycle</Button>
         </AddressForm>
+      )}
+      {loginPrompt && (
+        <div>
+          <p>You need to log in or sign up to submit items for recycling.</p>
+          <Link to={"/auth"}>You can Login or Signup here</Link>
+        </div>
       )}
     </FormContainer>
   );

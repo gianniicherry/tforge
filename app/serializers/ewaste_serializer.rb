@@ -1,3 +1,5 @@
 class EwasteSerializer < ActiveModel::Serializer
-  attributes :id
+  attributes :id, :name, :condition
+
+  belongs_to :category 
 end

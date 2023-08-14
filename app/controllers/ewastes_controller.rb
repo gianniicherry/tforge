@@ -12,7 +12,7 @@ class EwastesController < ApplicationController
     private
     
     def ewaste_params
-        params.permit(:name,:condition,:user_id, :request_id, :category_id)
+        params.permit(:name,:condition,:user_id, :request_id, :category_id,:image)
     end
 
     def current_user

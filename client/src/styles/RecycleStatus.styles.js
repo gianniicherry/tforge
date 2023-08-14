@@ -13,27 +13,64 @@ export const SectionTitle = styled.h2`
   margin-bottom: 10px;
 `;
 
-export const EditableField = styled.div`
-  display: flex;
-  align-items: center;
+export const StyledFormContainer = styled.div`
+  /* Add styles for the form container */
+  padding: 20px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+`;
+
+export const RequestContainer = styled.div`
+  /* Add styles for the request container */
+  margin: 20px 0;
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    color: #333;
+  }
+`;
+
+export const Address = styled.p`
+  /* Add styles for the address */
+  font-size: 14px;
+  color: #666;
+`;
+
+export const CategoryList = styled.ul`
+  /* Add styles for the category list */
+  list-style: none;
+  padding: 0;
+`;
+
+export const CategoryItem = styled.li`
+  /* Add styles for the category item */
+  margin-bottom: 10px;
+  color: #333;
+
+  p {
+    font-size: 16px;
+    margin: 5px 0;
+  }
+`;
+
+export const ItemList = styled.ul`
+  /* Add styles for the item list */
+  list-style: none;
+  padding: 0;
+`;
+
+export const Item = styled.li`
+  /* Add styles for the item */
   margin-bottom: 15px;
-`;
+  color: #333;
 
-export const Label = styled.label`
-  width: 150px;
-  font-weight: bold;
-`;
-
-export const Input = styled.input`
-  flex: 1;
-  padding: 8px;
-`;
-
-export const Button = styled.button`
-  padding: 8px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  p {
+    font-size: 16px;
+    margin: 5px 0;
+  }
 `;

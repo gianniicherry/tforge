@@ -3,7 +3,8 @@ class CreateCategories < ActiveRecord::Migration[7.0]
     create_table :categories do |t|
       t.string "name"
       t.string "brand"
-      t.integer "weight"
+      t.float "weight"
+      t.integer "price"
 
 
       t.timestamps

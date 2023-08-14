@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
-  resources :requests
+  resources :values
+  resources :requests do 
+    resources :ewastes, only: [:index]
+    get "/requestvalue", to: "values#estimate"
+  end
   resources :ewastes
   resources :products
   resources :categories
