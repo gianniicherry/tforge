@@ -12,12 +12,14 @@ import { Route, Routes} from 'react-router-dom';
 
 export const UserContext = createContext();
 export const RequestContext = createContext();
+export const CategoryContext = createContext();
 
 function App() {
 
   const [currentUser, setCurrentUser] = useState(null)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [requests, setRequests] = useState([])
+  const [category, setCategory] = useState([])
   
   useEffect(() => {
     fetch('/auth').then((response) => {
@@ -40,6 +42,12 @@ function App() {
     });
   }, [currentUser]);
 
+  useEffect(() => {
+    fetch("/categories")
+      .then(response => response.json())
+      .then(data => setCategory(data))
+  }, []);
+
   function handleLogin(user) {
     setCurrentUser(user);
     setIsLoggedIn(true)
@@ -61,6 +69,7 @@ function App() {
       <div className="container">
       <UserContext.Provider value={{ currentUser, setCurrentUser, isLoggedIn }}>
         <RequestContext.Provider value={{requests, setRequests}}>
+        <CategoryContext.Provider value={{category, setCategory}}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<Auth onLogin={handleLogin} />} />
@@ -70,6 +79,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/recyclerequests" element={<RecycleStatus />} />
         </Routes>
+        </CategoryContext.Provider>
         </RequestContext.Provider>
         </UserContext.Provider>
       </div>

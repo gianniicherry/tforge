@@ -9,6 +9,12 @@ class EwastesController < ApplicationController
         end
     end
 
+    def update
+        ewaste = Ewaste.find_by(id: params[:id])
+        ewaste.update!(ewaste_params)
+        render json: ewaste
+    end
+
     private
     
     def ewaste_params
