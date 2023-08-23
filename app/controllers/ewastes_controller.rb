@@ -15,6 +15,17 @@ class EwastesController < ApplicationController
         render json: ewaste
     end
 
+    def destroy
+        ewaste = Ewaste.find_by(id: params[:id])
+        current_user = User.find_by(id: session[:user_id])
+        if current_user && ewaste && current_user.id == ewaste.user_id
+        ewaste.destroy
+        head :no_content
+        else
+        render json: {error: "Not Authorized"}, status: :unauthorized
+        end 
+    end
+
     private
     
     def ewaste_params

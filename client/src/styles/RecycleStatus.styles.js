@@ -74,3 +74,18 @@ export const Item = styled.li`
     margin: 5px 0;
   }
 `;
+
+export const ExpandButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-left: 5px;
+    transition: transform 0.3s;
+    transform: ${({ expanded }) => (expanded ? "rotate(180deg)" : "rotate(0deg)")};
+  }
+`;

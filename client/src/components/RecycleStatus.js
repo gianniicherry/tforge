@@ -15,7 +15,7 @@ function RecycleStatus(){
         <SectionTitle>Current Requests</SectionTitle>
     
         {requests.map(request => (
-          <Request request={request}/>
+          <Request key={request.id} request={request}/>
           /*<RequestContainer key={request.id}>
             <h2>Request ID: {request.id}</h2>
             <Address>

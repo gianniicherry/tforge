@@ -61,6 +61,17 @@ function App() {
     setCurrentUser(null)
   }
 
+  function handleAddRecycle(newRequest) {
+    console.log(requests)
+    console.log(newRequest);
+    setRequests(prevRequests => [...prevRequests, newRequest]);
+  }
+  
+  // ...
+  
+  useEffect(() => {
+     // This will log the updated state when it changes
+  }, [requests]);
 
 
   return (
@@ -68,7 +79,7 @@ function App() {
       <Navbar isLoggedIn={isLoggedIn}/>
       <div className="container">
       <UserContext.Provider value={{ currentUser, setCurrentUser, isLoggedIn }}>
-        <RequestContext.Provider value={{requests, setRequests}}>
+        <RequestContext.Provider value={{requests, setRequests, handleAddRecycle}}>
         <CategoryContext.Provider value={{category, setCategory}}>
         <Routes>
           <Route path="/" element={<Home />} />

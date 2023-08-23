@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {Link} from "react-router-dom"
-import { UserContext } from '../App';
+import { RequestContext, UserContext } from '../App';
 import {FormContainer, Form, Label, Select, Input, Button, ItemContainer, AddressForm} from "../styles/Recycle.styles"
 
 function Recycle() {
     const { currentUser} = useContext(UserContext);
+    const {handleAddRecycle, requests} = useContext(RequestContext)
   const [category, setCategory] = useState("Laptop");
   const [categoryId, setCategoryId] = useState('')
   const [brands, setBrands] = useState([]);
@@ -22,6 +23,9 @@ function Recycle() {
   const [loginPrompt, setLoginPrompt] = useState(false)
   const [anyItems, setAnyItems] = useState(false)
   const [imageFile, setImageFile] = useState(null)
+  const [submitted, setSubmitted] = useState(false);
+  const [addressSubmitted, setAddressSubmitted] = useState(false);
+
 
   useEffect(() => {
     fetch("/categories")
@@ -33,22 +37,25 @@ function Recycle() {
   useEffect(() => {
     const filteredBrands = brands.filter(option => option.name === category);
     if (filteredBrands.length > 0) {
-      setSelectedBrand(filteredBrands[0].brand);
-      setCategoryId(filteredBrands[0].id)
-    } else {
-      setSelectedBrand('');
+      const matchingBrand = filteredBrands.find(option => option.brand === selectedBrand);
+      if (matchingBrand) {
+        setCategoryId(matchingBrand.id);
+      }
     }
-  }, [category, brands]);
+  }, [category, selectedBrand, brands]);
 
   useEffect(() => {
     const filteredBrands = brands.filter(option => option.name === category);
-    setSelectedBrand(filteredBrands);
-  }, []);
+    if (filteredBrands.length > 0) {
+      setSelectedBrand(filteredBrands[0].brand);
+    }
+  }, [category, brands]);
+  
 
   const handleAddItem = () => {
     if (currentUser) {
       // Validate form fields before adding the item
-      if (!product || !condition || !selectedBrand || !category) {
+      if (!product || !condition || !selectedBrand || !category || !imageFile) {
         alert('Please fill out all form fields.');
         return;
       }
@@ -58,8 +65,11 @@ function Recycle() {
         user_id: currentUser.id,
         request_id: requestId,
         category_id: categoryId,
-        image: imageFile
+        image: imageFile,
+        brand: selectedBrand, // Use selectedBrand directly
+        category: category,
       };
+      
       setItems([...items, newEwaste]);
       // Clear input fields
       setAnyItems(true)
@@ -77,17 +87,31 @@ function Recycle() {
   function handleSubmit(e) {
     e.preventDefault();
   
-    const formData = new FormData();
-    formData.append('address1', requestAddress1);
-    formData.append('address2', requestAddress2);
-    formData.append('city', requestCity);
-    formData.append('state', requestState);
-    formData.append('zip', requestZip);
-    formData.append('user_id', currentUser.id);
+    const newRequest = {
+      address1: requestAddress1,
+      address2: requestAddress2,
+      city: requestCity,
+      state: requestState,
+      zip: requestZip,
+      user_id: currentUser.id,
+      ewastes: items.map(item => ({
+        name: item.name,
+        condition: item.condition,
+        category: {
+          name: item.category,
+          brand: item.brand, // Use item's brand here
+        },
+      })),
+    };
+    
+    
   
     fetch('/requests', {
       method: 'POST',
-      body: formData, // Use the FormData object
+      body: JSON.stringify(newRequest),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
       .then(response => response.json())
       .then(requestData => {
@@ -100,7 +124,7 @@ function Recycle() {
           itemFormData.append('user_id', item.user_id);
           itemFormData.append('request_id', requestId);
           itemFormData.append('category_id', item.category_id);
-          itemFormData.append('image', item.image); 
+          itemFormData.append('image', item.image);
   
           return fetch('/ewastes', {
             method: 'POST',
@@ -116,28 +140,33 @@ function Recycle() {
             });
         });
   
-        return Promise.all(itemPromises).then(() => requestId);
-      })
-      .then(submittedRequestId => {
-        console.log('Request and items submitted successfully');
-        // Now you can make the fetch request with the correct requestId
-        fetch(`/requests/${submittedRequestId}/requestvalue`)
-          .then(r => r.json())
-          .then(data => console.log(data))
+        Promise.all(itemPromises)
+          .then(() => {
+            console.log('Items submitted successfully');
+            
+            // Use the handleAddRecycle function to update the state
+            handleAddRecycle(newRequest);
+            setSubmitted(true)
+            setAddressSubmitted(true);
+            // ... rest of your code to handle fetching request value
+          })
           .catch(error => {
-            console.error('Error fetching request value:', error);
+            console.error('Error submitting items:', error);
           });
       })
       .catch(error => {
-        console.error('Error:', error);
+        console.error('Error submitting request:', error);
       });
-      setImageFile(null)
-      setRequestAddress1(" ")
-      setRequestAddress2(" ")
-      setRequestCity(" ")
-      setRequestState(" ")
-      setRequestZip(" ")
+  
+    // Reset form fields and state
+    setImageFile(null);
+    setRequestAddress1('');
+    setRequestAddress2('');
+    setRequestCity('');
+    setRequestState('');
+    setRequestZip('');
   }
+  
    
 
 function renderRequest(e) {
