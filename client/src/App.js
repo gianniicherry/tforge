@@ -61,17 +61,27 @@ function App() {
     setCurrentUser(null)
   }
 
-  function handleAddRecycle(newRequest) {
-    console.log(requests)
-    console.log(newRequest);
+  function handleAddRecycle(requestData, requestId, ewastesResponses) {
+    const newEwastes = ewastesResponses.map(item => ({
+      id: item.id, 
+      name: item.name,
+      condition: item.condition,
+      category: {
+        name: item.category.name,
+        brand: item.category.brand, 
+      },
+    }));
+  
+    const newRequest = {
+      ...requestData,
+      id: requestId,
+      ewastes: newEwastes,
+    };
+  
     setRequests(prevRequests => [...prevRequests, newRequest]);
   }
   
-  // ...
-  
-  useEffect(() => {
-     // This will log the updated state when it changes
-  }, [requests]);
+ 
 
 
   return (

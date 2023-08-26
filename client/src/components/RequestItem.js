@@ -3,7 +3,7 @@ import { CategoryContext, RequestContext } from "../App";
 import {InfoContainer,InfoLabel, InfoValue, EditButton, Form, Label,Select, Input, ButtonContainer, SubmitButton, CancelButton, DeleteButton, Option} from "../styles/RequestItem.styles"
 
 function RequestItem({ item, index }) {
-  const { category, setCategory } = useContext(CategoryContext);
+  const { category} = useContext(CategoryContext);
   const {requests, setRequests} = useContext(RequestContext)
 
  
@@ -53,7 +53,6 @@ function RequestItem({ item, index }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         handleUpdateEwaste(data);
         setEditForm(true);
       });

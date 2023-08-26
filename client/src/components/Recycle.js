@@ -5,7 +5,7 @@ import {FormContainer, Form, Label, Select, Input, Button, ItemContainer, Addres
 
 function Recycle() {
     const { currentUser} = useContext(UserContext);
-    const {handleAddRecycle, requests} = useContext(RequestContext)
+    const {handleAddRecycle} = useContext(RequestContext)
   const [category, setCategory] = useState("Laptop");
   const [categoryId, setCategoryId] = useState('')
   const [brands, setBrands] = useState([]);
@@ -66,12 +66,11 @@ function Recycle() {
         request_id: requestId,
         category_id: categoryId,
         image: imageFile,
-        brand: selectedBrand, // Use selectedBrand directly
+        brand: selectedBrand, 
         category: category,
       };
       
       setItems([...items, newEwaste]);
-      // Clear input fields
       setAnyItems(true)
       setProduct('');
       setImageFile(null)
@@ -99,7 +98,7 @@ function Recycle() {
         condition: item.condition,
         category: {
           name: item.category,
-          brand: item.brand, // Use item's brand here
+          brand: item.brand, 
         },
       })),
     };
@@ -116,7 +115,7 @@ function Recycle() {
       .then(response => response.json())
       .then(requestData => {
         const requestId = requestData.id;
-  
+        setRequestId(requestId)
         const itemPromises = items.map(item => {
           const itemFormData = new FormData();
           itemFormData.append('name', item.name);
@@ -134,6 +133,7 @@ function Recycle() {
               if (!itemResponse.ok) {
                 console.error('Failed to submit item:', item);
               }
+              return itemResponse.json();
             })
             .catch(error => {
               console.error('Error submitting item:', error);
@@ -141,14 +141,13 @@ function Recycle() {
         });
   
         Promise.all(itemPromises)
-          .then(() => {
+          .then(ewastesResponses => {
             console.log('Items submitted successfully');
-            
-            // Use the handleAddRecycle function to update the state
-            handleAddRecycle(newRequest);
+            console.log(ewastesResponses)
+            handleAddRecycle(requestData, requestId, ewastesResponses);
             setSubmitted(true)
-            setAddressSubmitted(true);
-            // ... rest of your code to handle fetching request value
+            setAddressSubmitted(!addressSubmitted);
+            
           })
           .catch(error => {
             console.error('Error submitting items:', error);
@@ -165,6 +164,8 @@ function Recycle() {
     setRequestCity('');
     setRequestState('');
     setRequestZip('');
+    setAnyItems(false)
+    setShowRequest(false)
   }
   
    
@@ -189,6 +190,16 @@ function renderRequest(e) {
   
   return (
     <FormContainer>
+      {submitted ? (
+      <div>
+        <h2>Thank you for submitting your request!</h2>
+        <p>You can review all of your recycle requests here.</p>
+        <Link to={"/recyclerequests"}>
+          <Button>Account</Button>
+        </Link>
+      </div>
+      ) : (
+        <>
       <Form onSubmit={renderRequest}>
         <Label>Product Category</Label>
         <Select id="category" value={category} onChange={(e) => setCategory(e.target.value)}>
@@ -221,6 +232,8 @@ function renderRequest(e) {
         <Button type="submit">Submit</Button>
       </Form>
       <Button onClick={handleAddItem}>Add Another Item</Button>
+      </>
+        )}
      {anyItems ? <ItemContainer>
         {items.map((item, index) => (
           <div key={index}>

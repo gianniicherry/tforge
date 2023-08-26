@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import RequestItem from "./RequestItem";
-import { RequestContainer, Address, ItemList, Item, ExpandButton} from "../styles/RecycleStatus.styles";
+import { RequestContainer, Address, ItemList, ExpandButton} from "../styles/RecycleStatus.styles";
 
 function Request({ request }) {
   const [isExpanded, setIsExpanded] = useState(false);
