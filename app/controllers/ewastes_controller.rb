@@ -2,11 +2,8 @@ class EwastesController < ApplicationController
     before_action :authorize
 
     def create
-        if current_user
         ewaste = Ewaste.create!(ewaste_params)
         render json: ewaste, status: :created
-        else 
-        end
     end
 
     def update

@@ -6,7 +6,8 @@ import {PageContainer, FormContainer,Label, Input, SubmitButton} from "../styles
 function Auth({onLogin}){
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [errors, setErrors] = useState([])
+    const [errorMessage, setErrorMessage] = useState(false)
+    const [errors, setErrors] = useState({})
     const [isSigningUp, setIsSigningUp] = useState(false)
     
 
@@ -28,11 +29,13 @@ function Auth({onLogin}){
                     onLogin(user)
                     setEmail('')
                     setPassword('')
+                    setErrorMessage(false)
                     window.location.href = '/'; 
                 })
             } else {
-                res.json().then(e => setErrors(e.errors))
-                console.log(errors)
+                res.json().then(e => setErrors(e.error))
+                setErrorMessage(true)
+                
             }
         })
     }
@@ -54,6 +57,12 @@ function Auth({onLogin}){
             </Label>
             <SubmitButton type="submit" value="Sign Up" onClick={() => setIsSigningUp(true)}/>
             <SubmitButton type="submit" value="Login" onClick={() => setIsSigningUp(false)} />
+            {errorMessage && (
+          <div>
+            {errors.login && <p>Login error: {errors.login}</p>}
+            {errors.password && <p>Password error: {errors.password.join(', ')}</p>}
+          </div>
+        )}
         </FormContainer>
     </PageContainer>
     </div>
