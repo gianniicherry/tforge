@@ -9,8 +9,8 @@ class RequestsController < ApplicationController
     end
 
     def index 
-        current_user
-        requests = Request.all
+        current_user = User.find_by(id: session[:user_id])
+        requests = current_user.requests.filter{|r| r.user_id === current_user.id}
         if requests.any?
             render json: requests
         else 

@@ -40,7 +40,7 @@ function App() {
         });
       }
     });
-  }, [currentUser]);
+  }, []);
 
   useEffect(() => {
     fetch("/categories")
