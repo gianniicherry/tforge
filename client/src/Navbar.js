@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { SiteTitle, NavbarContainer, NavLink, NavList, NavItem } from "./styles/Navbar.styles";
 
 export default function Navbar({ isLoggedIn }) {

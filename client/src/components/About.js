@@ -21,7 +21,7 @@ function About(){
             with limited optimization on consumer friendly platforms to send in unwanted e-waste. </p>
             <p> 
             Our platform is handled completely over the air, making it easy for our users to recycle their e-waste from home. </p>
-            <Link to={"recycle"}>
+            <Link to={"/recycle"}>
             <Button>Start recycling now</Button>
             </Link>
             </FormContainer> 

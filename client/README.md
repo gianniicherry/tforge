@@ -1,6 +1,42 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Welcome to the Terraforge! This application serves as a platform for users to efficiently recycle electronic waste. The app combines a React front-end with a Ruby on Rails back-end to provide a seamless user experience. It includes features such as user authentication, a recycling form, and an account dashboard for managing recycling requests.
+
+
+Table of Contents
+Features
+Installation
+Usage
+Technologies
+Contributing
+License
+Features
+User Authentication:
+
+Users can register and log in securely to access the application's features.
+Password hashing and salting ensure user data safety.
+Recycle Form:
+
+Users can submit requests to recycle electronic waste.
+The form collects essential information about the waste items, such as type, category,brand and condition.
+Account Dashboard:
+
+After logging in, users are directed to their account dashboard.
+The dashboard displays a summary of their submitted recycling requests.
+Users can review, update, or delete their requests if necessary.
+
+Register or Log In:
+
+If you're a new user, sign up with your details.
+If you're an existing user, log in using your credentials.
+Submit a Recycling Request:
+
+Once logged in, navigate to the recycling form.
+Fill in the required details about the electronic waste you want to recycle.
+Submit the form.
+Account Dashboard:
+
+After submitting requests, you can view them in your account dashboard.
+Review, update, or delete requests as needed.
 
 ## Available Scripts
 

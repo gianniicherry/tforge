@@ -14,7 +14,7 @@ class RequestsController < ApplicationController
         if requests.any?
             render json: requests
         else 
-            render json: {error: "No requests for #{current_user} found." }, status: :not_found
+            render json: {error: "No requests for #{current_user.email} found." }, status: :not_found
         end
     end
 

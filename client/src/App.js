@@ -20,6 +20,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [requests, setRequests] = useState([])
   const [category, setCategory] = useState([])
+  const [errorMessage, setErrorMessage] = useState("")
   
   useEffect(() => {
     fetch('/auth').then((response) => {
@@ -37,6 +38,10 @@ function App() {
       if (response.ok) {
         response.json().then((request) => {
           setRequests(request)
+        });
+      } else {
+        response.json().then((errorData) => {
+          setErrorMessage(errorData.error);
         });
       }
     });
@@ -79,6 +84,7 @@ function App() {
     };
   
     setRequests(prevRequests => [...prevRequests, newRequest]);
+    setErrorMessage("")
   }
   
  
@@ -89,7 +95,7 @@ function App() {
       <Navbar isLoggedIn={isLoggedIn}/>
       <div className="container">
       <UserContext.Provider value={{ currentUser, setCurrentUser, isLoggedIn }}>
-        <RequestContext.Provider value={{requests, setRequests, handleAddRecycle}}>
+        <RequestContext.Provider value={{requests, setRequests, handleAddRecycle, errorMessage}}>
         <CategoryContext.Provider value={{category, setCategory}}>
         <Routes>
           <Route path="/" element={<Home />} />

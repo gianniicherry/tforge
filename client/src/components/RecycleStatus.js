@@ -4,7 +4,7 @@ import {DashboardContainer, SectionTitle} from "../styles/RecycleStatus.styles"
 import Request from "./Request"
 
 function RecycleStatus(){
-  const { requests} = useContext(RequestContext);
+  const { requests, errorMessage} = useContext(RequestContext);
  
 
   
@@ -12,7 +12,7 @@ function RecycleStatus(){
     return (
       <DashboardContainer>
         <SectionTitle>Current Requests</SectionTitle>
-    
+        {errorMessage && <div className="error">{errorMessage}</div>}
         {requests.map(request => (
           <Request key={request.id} request={request}/>
          ))}
